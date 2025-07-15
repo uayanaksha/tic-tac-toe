@@ -145,7 +145,42 @@ class TicTacToe{
       }
     }
 
+    int minimax(bool isMax){
+      if(isWinner('o')) return +10;
+      if(isWinner('x')) return -10;
+      if(isDraw()) return 0;
+      int best = isMax ? -1000 : 1000;
+
+      for (int i{}; i < BOARD_LENGTH; ++i) {
+        for (int j{}; j < BOARD_LENGTH; ++j) {
+          if(board.at(i).at(j) == ' '){
+            board.at(i).at(j) = isMax ? 'o' : 'x';
+            int score = minimax(!isMax);
+            board.at(i).at(j) = ' ';
+            if (isMax) best = std::max(best, score);
+            else best = std::min(best, score);
+          }
+        }
+      }
+      return best;
+    }
+
     void machineInput(char c){
+      int bestVal = -1000, row = -1, col = -1;
+      for (int i{}; i < BOARD_LENGTH; ++i) {
+        for (int j{}; j < BOARD_LENGTH; ++j) {
+          if(board.at(i).at(j) == ' '){
+            board.at(i).at(j) = 'o';
+            int moveVal = minimax(false);
+            board.at(i).at(j) = ' ';
+            if(moveVal > bestVal){
+              bestVal = moveVal;
+              row = i, col = j;
+            }
+          }
+        }
+      }
+      board.at(row).at(col) = 'o';
     }
 
   public:
