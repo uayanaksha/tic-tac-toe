@@ -75,7 +75,7 @@ class TicTacToe{
     }
 
     std::string genColor(char c){
-      std::string s = std::to_string((char)c);
+      std::string s(1, c);
       switch(c){
         case 'x': s = AnsiColors::GREEN + s + AnsiColors::RESET; break;
         case 'o': s = AnsiColors::RED + s + AnsiColors::RESET; break;
@@ -121,7 +121,7 @@ class TicTacToe{
 
     static void signalHandler(int sig_num){
       signal(SIGINT, signalHandler);
-      printf("Exit gracefully using \'/\' key\n");
+      printf("\nExit gracefully using \'/\' key\n");
     }
 
     int humanInput(char c){
