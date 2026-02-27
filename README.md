@@ -4,8 +4,10 @@
 
  - [Ready] Game model
  - [Ready] Raw mode enabled 
- - [Todo] Unexpected exit removes the term cursor.
- - [Todo] AI engine impl. for player vs computer mode support.
+ - [Ready] Unexpected exit removes the term cursor.
+ - [Ready] AI engine impl. for player vs computer mode support.
  - [Enhancement] Impl. improved input and output approaches
  - [Todo] backend to play over network (same wifi PORT:PORT connection)
  - [Todo] Player rating store in db.
+ - [Enhancement] AI mode needs knowledge-based decision making support
+ - [Enhancement] Graceful exit added.

@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-#include <string>
+#include <signal.h>
 #include <termios.h>
 
 // Claude code-gen start
@@ -44,6 +44,7 @@ namespace AnsiColors {
 
 class TicTacToe{
   private:
+    template<typename T> using v = std::vector<T>;
     static const unsigned BOARD_LENGTH = 3;
     std::vector<std::vector<char>> board{
       {' ', ' ', ' '},
@@ -73,22 +74,32 @@ class TicTacToe{
       return true;
     }
 
+    std::string genColor(char c){
+      std::string s = std::to_string((char)c);
+      switch(c){
+        case 'x': s = AnsiColors::GREEN + s + AnsiColors::RESET; break;
+        case 'o': s = AnsiColors::RED + s + AnsiColors::RESET; break;
+        default:  s = AnsiColors::BOLD + s + AnsiColors::RESET; break;
+      }
+      return s;
+    }
+
     void redraw(){
       std::cout 
         << AnsiColors::CLS << AnsiColors::WHITE << AnsiColors::BOLD
         << "{" 
         << std::endl
-        << "  " << "q:" << "[" << board.at(0).at(0) << "]"
-        << "  " << "w:" << "[" << board.at(0).at(1) << "]"
-        << "  " << "e:" << "[" << board.at(0).at(2) << "]"
+        << "  " << "q:" << "[" << genColor(board.at(0).at(0)) << "]"
+        << "  " << "w:" << "[" << genColor(board.at(0).at(1)) << "]"
+        << "  " << "e:" << "[" << genColor(board.at(0).at(2)) << "]"
         << std::endl
-        << "  " << "a:" << "[" << board.at(1).at(0) << "]"
-        << "  " << "s:" << "[" << board.at(1).at(1) << "]"
-        << "  " << "d:" << "[" << board.at(1).at(2) << "]"
+        << "  " << "a:" << "[" << genColor(board.at(1).at(0)) << "]"
+        << "  " << "s:" << "[" << genColor(board.at(1).at(1)) << "]"
+        << "  " << "d:" << "[" << genColor(board.at(1).at(2)) << "]"
         << std::endl
-        << "  " << "z:" << "[" << board.at(2).at(0) << "]"
-        << "  " << "x:" << "[" << board.at(2).at(1) << "]"
-        << "  " << "c:" << "[" << board.at(2).at(2) << "]"
+        << "  " << "z:" << "[" << genColor(board.at(2).at(0)) << "]"
+        << "  " << "x:" << "[" << genColor(board.at(2).at(1)) << "]"
+        << "  " << "c:" << "[" << genColor(board.at(2).at(2)) << "]"
         << std::endl
         << "}"
         << AnsiColors::RESET 
@@ -108,7 +119,13 @@ class TicTacToe{
         << std::endl;
     }
 
-    void humanInput(char c){
+    static void signalHandler(int sig_num){
+      signal(SIGINT, signalHandler);
+      printf("Exit gracefully using \'/\' key\n");
+    }
+
+    int humanInput(char c){
+      signal(SIGINT, signalHandler);
       char input;
       RawMode raw;
       std::cout 
@@ -116,7 +133,6 @@ class TicTacToe{
         << "Enter choice: ";
       raw.enable();
       std::cin >> input;
-      raw.disable();
       std::cout << std::endl;
 
       switch(input){
@@ -138,11 +154,12 @@ class TicTacToe{
         case 'z': if (board.at(2).at(0) == ' ') { board.at(2).at(0) = c; } break;
         case 'x': if (board.at(2).at(1) == ' ') { board.at(2).at(1) = c; } break;
         case 'c': if (board.at(2).at(2) == ' ') { board.at(2).at(2) = c; } break;
-        case '/': exit(1);
+        case '/': return 1;
         default: 
           std::println("Invalid Input");
           break;
       }
+      return 0;
     }
 
     int minimax(bool isMax){
@@ -185,9 +202,10 @@ class TicTacToe{
 
   public:
     void Init(){ 
+      int controller = 0;
       do {
         redraw();
-        humanInput('x');
+        controller = humanInput('x');
         if (isWinner('x')) { 
           redraw();
           std::println("{}Player Won!{}", AnsiColors::GREEN, AnsiColors::RESET ); 
@@ -211,7 +229,7 @@ class TicTacToe{
           std::println("{}[Draw]{}: No moves left!", AnsiColors::YELLOW, AnsiColors::RESET); 
           break; 
         }
-      } while(true);
+      } while(controller == 0);
     }
 };
 
