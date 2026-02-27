@@ -5,10 +5,6 @@ build:
     -o build/tic-tac-toe \
     src/main.cpp
 
-run:
+run: build
   #!/bin/env bash
-  if [ -x build/tic-tac-toe ] ; then 
-    ./build/tic-tac-toe
-  else
-    echo "Build with `just build`"
-  fi
+  ./build/tic-tac-toe
